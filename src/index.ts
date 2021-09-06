@@ -5,6 +5,8 @@ const defaultOptions: types.RouterOptions = {
    notFoundTemplate: "404 Not found"
 }
 
+export const g = 5;
+
 export class Router {
 
   handlers: types.Handler[];
