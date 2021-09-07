@@ -5,8 +5,6 @@ const defaultOptions: types.RouterOptions = {
    notFoundTemplate: "404 Not found"
 }
 
-export const g = 5;
-
 export class Router {
 
   handlers: types.Handler[];
@@ -28,14 +26,16 @@ export class Router {
   }
 
   open(route: string) {
-    const url = `${window.location.origin}${route}`;
-    const finder = (handler: types.Handler): types.Handler => handler.path.test(route)
+    const url = new URL(route);
+    const { pathname, search } = url;
+    const newLocation = `${window.location.origin}${pathname}`;
+    const finder = (handler: types.Handler): types.Handler => handler.path.test(pathname)
     const handler = this.handlers.find(finder);
     const params: object = handler?.path.test(route);
     const beforeOpen = handler?.beforeOpen || this.options?.beforeOpen;
     if(beforeOpen) beforeOpen();
     this.container.innerHTML = handler?.template || this.options?.notFoundTemplate || "";
-    window.history.pushState({}, route, url);
+    window.history.pushState({}, route, newLocation);
     handler?.controller(params);
   }
 
